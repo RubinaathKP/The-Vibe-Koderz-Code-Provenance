@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User } from '../types';
-import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu, X, AlertCircle } from 'lucide-react';
+import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu, X, AlertCircle, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   user: User | null;
@@ -21,6 +21,21 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navError, setNavError] = useState<string | null>(null);
+  const [darkMode, setDarkMode] = useState(() => {
+    return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+  });
+
+  const toggleDarkMode = () => {
+    if (document.documentElement.classList.contains('dark')) {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+      setDarkMode(false);
+    } else {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+      setDarkMode(true);
+    }
+  };
 
   // Intentional route/link breakage fixed
   const handleNavClick = (tabId: string) => {
@@ -78,6 +93,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* User Actions */}
       <div className="flex items-center gap-3">
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="p-2.5 text-slate-600 hover:text-[#622569] rounded-xl hover:bg-slate-50 border border-slate-200/60 transition-colors"
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {darkMode ? <Sun className="w-4.5 h-4.5 text-amber-500" /> : <Moon className="w-4.5 h-4.5" />}
+        </button>
+
         {user ? (
           <>
             <button
