@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { User, Event, Project, Announcement, Opportunity, Resource } from './types';
-import { api, removeStoredToken } from './api';
+import { api, removeStoredToken, getCookie, setCookie } from './api';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { AuthView } from './components/AuthView';
@@ -75,7 +75,7 @@ export default function App() {
     };
 
     // Initialize theme from storage
-    const storedTheme = localStorage.getItem('theme');
+    const storedTheme = getCookie('theme');
     if (storedTheme === 'dark') {
       document.documentElement.classList.add('dark');
     } else if (storedTheme === 'light') {

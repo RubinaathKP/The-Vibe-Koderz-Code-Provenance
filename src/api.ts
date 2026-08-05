@@ -5,7 +5,7 @@ const TOKEN_KEY = 'iet_auth_token';
 
 let memoryToken: string | null = null;
 
-function getCookie(name: string): string | null {
+export function getCookie(name: string): string | null {
   try {
     const nameEQ = name + "=";
     const ca = document.cookie.split(';');
@@ -20,7 +20,7 @@ function getCookie(name: string): string | null {
   return null;
 }
 
-function setCookie(name: string, value: string, days?: number): void {
+export function setCookie(name: string, value: string, days?: number): void {
   try {
     let expires = "";
     if (days) {

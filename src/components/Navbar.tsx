@@ -1,6 +1,7 @@
 import React from 'react';
 import { User } from '../types';
 import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu, Sun, Moon } from 'lucide-react';
+import { getCookie, setCookie } from '../api';
 
 interface NavbarProps {
   user: User | null;
@@ -25,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [darkMode, setDarkMode] = React.useState(() => {
     try {
-      return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+      return document.documentElement.classList.contains('dark') || getCookie('theme') === 'dark';
     } catch {
       return false;
     }
@@ -35,13 +36,13 @@ export const Navbar: React.FC<NavbarProps> = ({
     try {
       if (darkMode) {
         document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
+        setCookie('theme', 'dark', 365);
       } else {
         document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+        setCookie('theme', 'light', 365);
       }
     } catch (e) {
-      console.warn('LocalStorage dark theme persistence failed:', e);
+      console.warn('Cookie dark theme persistence failed:', e);
     }
   }, [darkMode]);
 
