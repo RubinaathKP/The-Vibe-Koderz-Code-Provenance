@@ -418,6 +418,11 @@ async function startServer() {
     res.status(201).json({ success: true, resource: newResource, message: 'Resource shared with community!' });
   });
 
+  // Global Error Handler
+  app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error('Unhandled Server Exception:', err);
+    res.status(500).json({ success: false, message: err.message || 'Internal Server Error' });
+  });
 
   // Vite middleware / static files setup
   if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
