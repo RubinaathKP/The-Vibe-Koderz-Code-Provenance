@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { User } from '../types';
-import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu, X, AlertCircle, Sun, Moon } from 'lucide-react';
+import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu } from 'lucide-react';
 
 interface NavbarProps {
   user: User | null;
@@ -9,6 +9,8 @@ interface NavbarProps {
   onLogout: () => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  mobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -18,292 +20,104 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   searchQuery,
   setSearchQuery,
+  mobileMenuOpen,
+  setMobileMenuOpen,
 }) => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [navError, setNavError] = useState<string | null>(null);
-  const [darkMode, setDarkMode] = useState(() => {
-    return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-  });
-
-  const toggleDarkMode = () => {
-    if (document.documentElement.classList.contains('dark')) {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      setDarkMode(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      setDarkMode(true);
-    }
-  };
-
-  // Intentional route/link breakage fixed
-  const handleNavClick = (tabId: string) => {
-    if (tabId === 'profile' && !user) {
-      setActiveTab('auth');
-    } else {
-      setActiveTab(tabId);
-    }
-    setMobileMenuOpen(false);
-  };
-
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 py-4 flex items-center justify-between gap-4 shadow-sm">
+    <header className="sticky top-0 z-30 bg-yellow-200/95 backdrop-blur-md border-b-8 border-dashed border-red-500 px-2 sm:px-12 py-4 sm:py-8 flex items-center justify-between gap-3 sm:gap-10 -rotate-1 shadow-2xl">
       {/* Brand & Mobile Title */}
-      <div className="flex items-center gap-3">
-        {/* Mobile Hamburger menu - styled consistently with header buttons */}
+      <div className="flex items-center gap-2 sm:gap-6 rotate-3 -ml-4">
+        {/* Mobile Hamburger Button */}
         <button
-          onClick={() => {
-            setMobileMenuOpen(!mobileMenuOpen);
-          }}
-          className="p-2.5 text-slate-600 hover:text-[#622569] hover:bg-slate-50 border border-slate-200/80 rounded-xl md:hidden transition-colors flex items-center justify-center"
-          id="mobile-hamburger-btn"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="md:hidden p-2 bg-yellow-300 hover:bg-yellow-400 text-black border-4 border-black shadow-md focus:outline-none active:scale-95 transition-all rotate-3"
+          title="Open Menu"
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <Menu className="w-5 h-5" />
         </button>
-
         <div 
-          onClick={() => handleNavClick('dashboard')}
-          className="cursor-pointer flex items-center gap-3 group"
+          onClick={() => setActiveTab('dashboard')}
+          className="cursor-pointer flex items-center gap-2 sm:gap-4 group -skew-x-6"
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#622569] to-[#9b51e0] flex items-center justify-center text-white font-bold shadow-sm group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5 text-purple-200" />
+          <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-none bg-gradient-to-br from-pink-600 to-yellow-400 flex items-center justify-center text-white font-black shadow-2xl border-4 border-black group-hover:scale-110 rotate-12">
+            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-black animate-spin" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-[#622569] tracking-tight font-['Poppins']">IET CONNECT</span>
-              <span className="px-2 py-0.5 text-[9px] font-bold bg-[#622569]/10 text-[#622569] rounded-md tracking-wider">PORTAL</span>
+          <div className="-mt-2 sm:-mt-3">
+            <div className="flex items-center gap-1 sm:gap-3">
+              <span className="font-black text-base sm:text-2xl text-red-600 tracking-widest leading-none font-serif uppercase underline">IET CONNECT!!!</span>
+              <span className="px-2 py-0.5 sm:px-3 sm:py-1 text-[9px] sm:text-xs font-black uppercase tracking-widest bg-black text-yellow-300 rounded-none -rotate-12 border border-red-500">PORTAL</span>
             </div>
-            <p className="text-[10px] text-slate-500 font-medium hidden sm:block">Institution of Engineering and Technology</p>
+            <p className="text-[10px] sm:text-sm text-purple-900 font-mono font-bold hidden sm:block bg-yellow-100 p-1 border border-black mt-1 rotate-1">INSTITUTION OF ENGINEERING & TECH</p>
           </div>
         </div>
       </div>
 
       {/* Global Search Bar */}
-      <div className="hidden md:flex items-center flex-1 max-w-md mx-4 relative">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none" />
+      <div className="hidden md:flex items-center flex-1 max-w-lg mx-8 relative -rotate-2">
+        <Search className="w-6 h-6 text-red-600 absolute left-4 pointer-events-none" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search members, projects, events..."
-          className="w-full bg-slate-50 text-slate-900 text-xs pl-10 pr-4 py-2 rounded-xl border border-slate-200/80 focus:bg-white focus:border-[#9b51e0] focus:ring-2 focus:ring-[#9b51e0]/20 outline-none transition-all"
+          placeholder="SEARCH EVERYTHING HERE NOW!!!..."
+          className="w-full bg-white text-black font-mono font-black text-base pl-14 pr-6 py-4 rounded-none border-4 border-black focus:border-red-600 focus:ring-8 focus:ring-yellow-400/50 outline-none transition-all uppercase"
         />
       </div>
 
       {/* User Actions */}
-      <div className="flex items-center gap-3">
-        {/* Dark Mode Toggle */}
-        <button
-          onClick={toggleDarkMode}
-          className="p-2.5 text-slate-600 hover:text-[#622569] rounded-xl hover:bg-slate-50 border border-slate-200/60 transition-colors"
-          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        >
-          {darkMode ? <Sun className="w-4.5 h-4.5 text-amber-500" /> : <Moon className="w-4.5 h-4.5" />}
-        </button>
-
+      <div className="flex items-center gap-2 sm:gap-6 rotate-2 mr-2">
         {user ? (
           <>
             <button
-              onClick={() => handleNavClick('announcements')}
-              className="relative p-2.5 text-slate-600 hover:text-[#622569] rounded-xl hover:bg-slate-50 border border-slate-200/60 transition-colors"
+              onClick={() => setActiveTab('announcements')}
+              className="relative p-2.5 sm:p-4 text-white bg-purple-900 hover:bg-black rounded-full border-4 border-yellow-300 -rotate-12 shadow-xl"
               title="Notifications"
             >
-              <Bell className="w-4.5 h-4.5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full"></span>
+              <Bell className="w-5 h-5 sm:w-6 sm:h-6 animate-bounce" />
+              <span className="absolute top-0 right-0 w-3 h-3 sm:w-4 sm:h-4 bg-red-600 rounded-none ring-2 sm:ring-4 ring-black"></span>
             </button>
 
             {/* User Profile Pill */}
-            <div className="flex items-center gap-3 pl-3 border-l border-slate-200">
+            <div className="flex items-center gap-2 sm:gap-4 pl-2 sm:pl-4 border-l-4 sm:border-l-8 border-dotted border-black">
               <button
-                onClick={() => handleNavClick('profile')}
-                className="flex items-center gap-2 p-1.5 pr-3 rounded-xl hover:bg-slate-50 border border-slate-200/60 transition-colors text-left group"
+                onClick={() => setActiveTab('profile')}
+                className="flex items-center gap-1.5 sm:gap-3 p-1 sm:p-2 pr-2 sm:pr-6 rounded-none bg-yellow-300 hover:bg-yellow-400 border-4 border-black rotate-3 transition-colors text-left group"
               >
                 <img
                   src={user.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'}
                   alt={user.username}
-                  className="w-8 h-8 rounded-lg object-cover border border-slate-100 shadow-sm shrink-0"
-                  referrerPolicy="no-referrer"
+                  className="w-8 h-8 sm:w-12 sm:h-12 rounded-none object-cover border-4 border-black -rotate-12 group-hover:rotate-0 transition-all"
                 />
-                <div className="hidden sm:block font-sans">
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs font-bold text-slate-700 leading-tight">{user.username}</p>
+                <div className="hidden sm:block font-mono">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-black text-black leading-tight uppercase">{user.username}</p>
                     {user.role === 'lead' && (
-                      <ShieldCheck className="w-3.5 h-3.5 text-[#622569]" title="Chapter Lead" />
+                      <ShieldCheck className="w-5 h-5 text-red-600" title="Chapter Lead" />
                     )}
                   </div>
-                  <p className="text-[10px] text-slate-400 truncate max-w-[100px]">{user.institution.split('-')[0]}</p>
+                  <p className="text-xs text-red-700 font-bold uppercase truncate max-w-[130px]">{user.institution.split('-')[0]}</p>
                 </div>
               </button>
 
               <button
                 onClick={onLogout}
-                className="p-2.5 text-slate-500 hover:text-rose-600 rounded-xl hover:bg-rose-50 border border-slate-200/60 transition-colors"
+                className="p-2 sm:p-3 text-white bg-red-600 hover:bg-red-700 rounded-none border-4 border-black rotate-12 transition-colors shadow-lg"
                 title="Logout"
               >
-                <LogOut className="w-4.5 h-4.5" />
+                <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
           </>
         ) : (
           <button
-            onClick={() => handleNavClick('auth')}
-            className="flex items-center gap-1.5 bg-[#622569] hover:bg-[#9b51e0] text-white px-3.5 py-2 rounded-xl text-xs font-bold transition-all shadow-sm"
+            onClick={() => setActiveTab('auth')}
+            className="flex items-center gap-1.5 sm:gap-3 bg-red-600 hover:bg-black text-yellow-300 px-3 sm:px-6 py-2 sm:py-4 rounded-none text-xs sm:text-base font-black uppercase border-4 border-black shadow-2xl rotate-6 transition-all"
           >
-            <UserIcon className="w-3.5 h-3.5" />
-            <span>Sign In</span>
+            <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Login / Register NOW</span>
           </button>
         )}
       </div>
-
-      {/* Floating navigation error block */}
-      {navError && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-2xl text-xs font-semibold flex items-center gap-2.5 shadow-lg max-w-md w-full animate-fadeIn">
-          <AlertCircle className="w-4.5 h-4.5 text-rose-500 shrink-0" />
-          <span>{navError}</span>
-        </div>
-      )}
-
-      {/* Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <>
-          {/* Backdrop Overlay */}
-          <div 
-            className="fixed inset-0 z-40 md:hidden animate-fadeIn" 
-            style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }}
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          
-          {/* Drawer Panel */}
-          <div 
-            className="fixed left-0 top-0 w-72 h-screen z-50 shadow-2xl p-6 flex flex-col justify-between animate-fadeIn text-white border-r border-white/10"
-            style={{ backgroundColor: '#4e1a54' }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                <span className="text-sm font-bold text-purple-200 uppercase tracking-wider font-['Poppins']">Navigation</span>
-                <button 
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                  }}
-                  className="p-1.5 text-purple-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                  title="Close Menu"
-                >
-                  <X className="w-4.5 h-4.5" />
-                </button>
-              </div>
-
-              <div className="space-y-2.5">
-                {/* Dashboard */}
-                <button
-                  onClick={() => handleNavClick('dashboard')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'dashboard' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'dashboard' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Dashboard</span>
-                </button>
-
-                {/* Events & Workshops */}
-                <button
-                  onClick={() => handleNavClick('events')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'events' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'events' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'events' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Events & Workshops</span>
-                </button>
-
-                {/* Member Projects */}
-                <button
-                  onClick={() => handleNavClick('projects')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'projects' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'projects' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'projects' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Member Projects</span>
-                </button>
-
-                {/* Opportunities */}
-                <button
-                  onClick={() => handleNavClick('opportunities')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'opportunities' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'opportunities' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'opportunities' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Opportunities</span>
-                </button>
-
-                {/* Directory */}
-                <button
-                  onClick={() => handleNavClick('members')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'members' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'members' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'members' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Member Directory</span>
-                </button>
-
-                {/* Announcements */}
-                <button
-                  onClick={() => handleNavClick('announcements')}
-                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
-                  style={{
-                    backgroundColor: activeTab === 'announcements' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
-                    borderLeft: activeTab === 'announcements' ? '4px solid #d8b4fe' : '4px solid transparent',
-                    paddingLeft: activeTab === 'announcements' ? '14px' : '16px',
-                    color: '#ffffff'
-                  }}
-                >
-                  <span>Announcements</span>
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-white/10">
-              {user ? (
-                <button
-                  onClick={() => {
-                    onLogout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-2.5 bg-white/10 hover:bg-rose-500/20 text-rose-200 hover:text-rose-100 rounded-xl border border-white/10 text-xs font-semibold transition-all"
-                >
-                  Log Out
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleNavClick('auth')}
-                  className="w-full py-2.5 bg-white text-[#622569] font-bold text-xs hover:bg-purple-50 rounded-xl transition-all shadow"
-                >
-                  Access Portal
-                </button>
-              )}
-            </div>
-          </div>
-        </>
-      )}
     </header>
   );
 };

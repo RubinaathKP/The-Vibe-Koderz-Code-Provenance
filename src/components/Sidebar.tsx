@@ -52,16 +52,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <p className="px-3 text-[11px] font-semibold text-purple-200/70 uppercase tracking-wider mb-2">Main Navigation</p>
           {navItems.map((item) => {
             const Icon = item.icon;
-            
-            // Highlight based on current tab, but let's make the visual highlight glitch too
             const isActive = activeTab === item.id;
-            
             return (
               <button
                 key={item.id}
-                onClick={() => {
-                  setActiveTab(item.id);
-                }}
+                onClick={() => setActiveTab(item.id)}
                 className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all text-left ${
                   isActive
                     ? 'bg-white text-[#622569] font-semibold shadow-md shadow-black/10 translate-x-1'

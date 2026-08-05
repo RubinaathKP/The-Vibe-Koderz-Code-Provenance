@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Resource, User } from '../types';
-import { BookOpen, Download, PlusCircle, X, Search, Sparkles } from 'lucide-react';
+import { BookOpen, Download, ExternalLink, PlusCircle, Search, Sparkles, X, FileText, Video, Bookmark, Layers, Award } from 'lucide-react';
 
 interface ResourcesViewProps {
   resources: Resource[];
@@ -87,14 +87,12 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn font-sans">
+    <div className="space-y-6 animate-fadeIn">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 font-['Poppins']">Engineering & Learning Resources</h1>
-          <p className="text-xs text-slate-500 mt-1">
-            Access study guides, code repos, and engineering tutorials published by members.
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900 font-['Poppins']">Engineering & Academic Resources</h1>
+          <p className="text-xs text-slate-500 mt-1">Access curated IET standards, e-books, templates, research papers, and video lectures</p>
         </div>
 
         {user && (
@@ -145,51 +143,90 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
 
       {/* Resources Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredResources.map((res) => {
+        {filteredResources.map((res, idx) => {
           const resTime = res.timeline || 'present';
+
           return (
             <div
               key={res.id}
               className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
-              <div className="p-5 space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[#622569] bg-purple-50 px-2.5 py-1 rounded-full uppercase tracking-wider">
-                    {res.category}
+              <div>
+                {/* Image / Thumbnail Banner */}
+                <div className="h-40 relative overflow-hidden bg-slate-900">
+                  <img
+                    src={res.thumbnailUrl || 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=600&auto=format&fit=crop&q=80'}
+                    alt={res.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+                  <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                    <span className="bg-white/90 backdrop-blur-md text-[#622569] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                      {res.type}
+                    </span>
+                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md ${
+                      resTime === 'present'
+                        ? 'bg-emerald-500 text-slate-950 font-extrabold'
+                        : resTime === 'past'
+                        ? 'bg-slate-700/90 text-slate-200'
+                        : 'bg-purple-600/90 text-white'
+                    }`}>
+                      {resTime === 'present' ? '📚 Current' : resTime === 'past' ? '🏛️ Archive' : '🔮 Upcoming'}
+                    </span>
+                  </div>
+
+                  <span className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                    {res.level}
                   </span>
-                  <span className="text-xs text-slate-400 font-sans">{res.date}</span>
+
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <p className="text-[11px] text-purple-200 font-medium">By {res.authorOrProvider} {res.publishedYear ? `• (${res.publishedYear})` : ''}</p>
+                  </div>
                 </div>
 
-                <div className="space-y-1.5">
+                {/* Content Body */}
+                <div className="p-5 space-y-3">
                   <h3
                     onClick={() => setActiveResModal(res)}
                     className="font-bold text-slate-900 text-base leading-snug font-['Poppins'] hover:text-[#622569] cursor-pointer line-clamp-2"
                   >
                     {res.title}
                   </h3>
-                  <p className="text-xs text-slate-500 line-clamp-2">{res.description}</p>
+
+                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed pt-1">
+                    {res.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1 pt-2">
+                    {res.tags.map((t) => (
+                      <span key={t} className="text-[10px] font-semibold bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
+                        #{t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="p-5 pt-0 border-t border-slate-100 pt-4 flex items-center justify-between text-xs text-slate-500 mt-4">
-                <span>By <strong className="text-slate-700 font-medium">{res.authorOrProvider}</strong></span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setActiveResModal(res)}
-                    className="py-1.5 px-3 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
-                  >
-                    Details
-                  </button>
-                  <a
-                    href={res.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="py-1.5 px-3 rounded-xl text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] transition-colors flex items-center gap-1.5"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Access</span>
-                  </a>
-                </div>
+              {/* Footer CTA */}
+              <div className="p-5 pt-0 border-t border-slate-100/80 flex items-center justify-between gap-3 mt-4">
+                <button
+                  onClick={() => setActiveResModal(res)}
+                  className="py-2 px-3.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all"
+                >
+                  View Details
+                </button>
+
+                <a
+                  href={res.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="py-2 px-4 rounded-xl text-xs font-bold bg-[#622569] hover:bg-[#9b51e0] text-white shadow-sm transition-all flex items-center gap-1.5"
+                >
+                  <span>{res.type === 'Video Course' ? 'Watch Course' : res.type === 'Template' ? 'Download Kit' : 'Access Now'}</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
               </div>
             </div>
           );
@@ -197,15 +234,17 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
       </div>
 
       {filteredResources.length === 0 && (
-        <div className="bg-slate-50 p-8 rounded-3xl border border-slate-200 text-center text-sm text-slate-500">
-          <p className="font-semibold uppercase">No resources match the selected criteria</p>
+        <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/80">
+          <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+          <h3 className="text-base font-bold text-slate-700">No resources match your filters</h3>
+          <p className="text-xs text-slate-500 mt-1">Try switching to "All Resources" or another category tab.</p>
         </div>
       )}
 
       {/* RESOURCE DETAILS MODAL */}
       {activeResModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto font-sans">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-6 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setActiveResModal(null)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full"
@@ -213,60 +252,55 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
               <X className="w-4 h-4" />
             </button>
 
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#622569] bg-purple-100 px-3 py-1 rounded-full">
-                {activeResModal.category}
-              </span>
-              <h2 className="text-xl font-bold text-slate-900 font-['Poppins'] mt-2">{activeResModal.title}</h2>
-              <p className="text-xs font-semibold text-slate-500 mt-1">Uploaded by {activeResModal.authorOrProvider}</p>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#622569] bg-purple-100 px-3 py-1 rounded-full">
+                  {activeResModal.category}
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-slate-100 px-3 py-1 rounded-full">
+                  {activeResModal.type}
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                  {activeResModal.level}
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 font-['Poppins']">{activeResModal.title}</h2>
+              <p className="text-xs font-semibold text-slate-500">By {activeResModal.authorOrProvider} {activeResModal.publishedYear ? `(${activeResModal.publishedYear})` : ''}</p>
             </div>
 
-            {activeResModal.thumbnailUrl && (
-              <div className="h-40 rounded-2xl overflow-hidden relative border border-slate-100 my-4 shadow-sm">
-                <img src={activeResModal.thumbnailUrl} alt={activeResModal.title} className="w-full h-full object-cover" />
-              </div>
-            )}
+            <div className="h-56 rounded-2xl overflow-hidden relative border border-slate-200">
+              <img src={activeResModal.thumbnailUrl} alt={activeResModal.title} className="w-full h-full object-cover" />
+            </div>
 
             <div className="space-y-2">
-              <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider font-['Poppins']">Overview</h4>
+              <h4 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Overview & Learning Outcomes</h4>
               <p className="text-xs text-slate-600 leading-relaxed">{activeResModal.description}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs">
-              <div>
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Resource Type</p>
-                <p className="font-bold text-slate-800 mt-0.5">{activeResModal.type}</p>
-              </div>
-              <div>
-                <p className="text-slate-400 font-semibold uppercase tracking-wider text-[9px]">Level Scope</p>
-                <p className="font-bold text-slate-800 mt-0.5">{activeResModal.level}</p>
-              </div>
+            <div className="flex flex-wrap gap-1.5">
+              {activeResModal.tags.map((tag) => (
+                <span key={tag} className="text-xs font-semibold bg-slate-100 text-slate-700 px-3 py-1 rounded-lg">
+                  #{tag}
+                </span>
+              ))}
             </div>
-
-            {activeResModal.tags && activeResModal.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 pt-2">
-                {activeResModal.tags.map((tag, idx) => (
-                  <span key={idx} className="bg-slate-100 text-slate-600 text-[10px] px-2.5 py-1 rounded-md">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
 
             <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
               <button
                 onClick={() => setActiveResModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
               >
                 Close
               </button>
-
-              <button
-                onClick={() => window.open(activeResModal.url, '_blank')}
-                className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] shadow"
+              <a
+                href={activeResModal.url}
+                target="_blank"
+                rel="noreferrer"
+                className="px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] shadow-sm flex items-center gap-1.5"
               >
-                Access Resource Now
-              </button>
+                <span>Access Resource Now</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
             </div>
           </div>
         </div>
@@ -275,7 +309,7 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
       {/* SHARE RESOURCE MODAL */}
       {showShareModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto font-sans">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowShareModal(false)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full"
@@ -283,30 +317,28 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
               <X className="w-4 h-4" />
             </button>
 
-            <h2 className="text-lg font-bold text-slate-900 uppercase font-['Poppins']">
-              Share a Learning Resource
-            </h2>
+            <h2 className="text-lg font-bold text-slate-900 font-['Poppins']">Share a Learning Resource</h2>
 
-            <form onSubmit={handleShareSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Resource Title *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newResData.title}
-                    onChange={(e) => setNewResData({ ...newResData, title: e.target.value })}
-                    placeholder="e.g. Intro to Digital Signal Processing Notes"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
+            <form onSubmit={handleShareSubmit} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Resource Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={newResData.title}
+                  onChange={(e) => setNewResData({ ...newResData, title: e.target.value })}
+                  placeholder="e.g. Modern Power Electronics Design Handbook"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none focus:border-[#9b51e0]"
+                />
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Category</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Category</label>
                   <select
                     value={newResData.category}
                     onChange={(e) => setNewResData({ ...newResData, category: e.target.value as Resource['category'] })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none"
                   >
                     <option value="Engineering & Tech">Engineering & Tech</option>
                     <option value="Academic & Research">Academic & Research</option>
@@ -317,11 +349,11 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Resource Type</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Resource Type</label>
                   <select
                     value={newResData.type}
                     onChange={(e) => setNewResData({ ...newResData, type: e.target.value as Resource['type'] })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none"
                   >
                     <option value="E-Book">E-Book</option>
                     <option value="Video Course">Video Course</option>
@@ -330,23 +362,25 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
                     <option value="Kit">Kit</option>
                   </select>
                 </div>
+              </div>
 
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Author / Provider</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Author / Publisher</label>
                   <input
                     type="text"
                     value={newResData.authorOrProvider}
                     onChange={(e) => setNewResData({ ...newResData, authorOrProvider: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    placeholder="e.g. Dr. R. Sharma / IET UK"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none"
                   />
                 </div>
-
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Level</label>
+                  <label className="block font-semibold text-slate-700 mb-1">Level</label>
                   <select
                     value={newResData.level}
                     onChange={(e) => setNewResData({ ...newResData, level: e.target.value as Resource['level'] })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 outline-none"
                   >
                     <option value="All Levels">All Levels</option>
                     <option value="Beginner">Beginner</option>
@@ -354,45 +388,56 @@ export const ResourcesView: React.FC<ResourcesViewProps> = ({
                     <option value="Advanced / Research">Advanced / Research</option>
                   </select>
                 </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Resource Link *</label>
-                  <input
-                    type="url"
-                    required
-                    value={newResData.url}
-                    onChange={(e) => setNewResData({ ...newResData, url: e.target.value })}
-                    placeholder="https://drive.google.com/..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Short Description *</label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={newResData.description}
-                    onChange={(e) => setNewResData({ ...newResData, description: e.target.value })}
-                    placeholder="Outline what this resource contains..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
               </div>
 
-              <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Resource Link / URL *</label>
+                <input
+                  type="url"
+                  required
+                  value={newResData.url}
+                  onChange={(e) => setNewResData({ ...newResData, url: e.target.value })}
+                  placeholder="https://..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Cover / Thumbnail Image URL</label>
+                <input
+                  type="url"
+                  value={newResData.thumbnailUrl}
+                  onChange={(e) => setNewResData({ ...newResData, thumbnailUrl: e.target.value })}
+                  placeholder="https://images.unsplash.com/..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">Description *</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={newResData.description}
+                  onChange={(e) => setNewResData({ ...newResData, description: e.target.value })}
+                  placeholder="Summarize the resource, table of contents, and who should read it..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowShareModal(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
+                  className="px-4 py-2.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
                 >
-                  Discard
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] rounded-xl transition-all shadow"
+                  className="px-5 py-2.5 rounded-xl font-bold text-white bg-[#622569] hover:bg-[#9b51e0] shadow-sm"
                 >
-                  Publish Resource
+                  Share With Chapter
                 </button>
               </div>
             </form>

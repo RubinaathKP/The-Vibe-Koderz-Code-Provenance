@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { api } from '../api';
 import { User } from '../types';
 import { UserCheck, Lock, Mail, Phone, Calendar, MapPin, Building, User as UserIcon, Sparkles, AlertCircle, ArrowRight } from 'lucide-react';
-import { PhoneInput } from './PhoneInput';
 
 interface AuthViewProps {
   onAuthSuccess: (user: User) => void;
@@ -12,7 +11,6 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
   const [isLoginView, setIsLoginView] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [isPhoneValid, setIsPhoneValid] = useState(true);
 
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
@@ -59,10 +57,6 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
       setErrorMsg('Username, Email and Password are required.');
       return;
     }
-    if (!isPhoneValid) {
-      setErrorMsg('Please enter a valid phone number according to the selected country format.');
-      return;
-    }
     setErrorMsg(null);
     setLoading(true);
 
@@ -74,7 +68,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
         setErrorMsg(res.message || 'Registration failed.');
       }
     } catch (err: any) {
-      setErrorMsg('Error creating account. Please try again.');
+      setErrorMsg('Error creating account. Please check your network connection.');
     } finally {
       setLoading(false);
     }
@@ -255,11 +249,16 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                  <PhoneInput
-                    value={regData.phone}
-                    onChange={(val) => setRegData({ ...regData, phone: val })}
-                    onValidate={setIsPhoneValid}
-                  />
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                    <input
+                      type="tel"
+                      value={regData.phone}
+                      onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
+                      placeholder="+91 98765 43210"
+                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    />
+                  </div>
                 </div>
 
                 <div>

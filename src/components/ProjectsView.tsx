@@ -251,123 +251,115 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
       {/* SUBMIT PROJECT MODAL */}
       {showSubmitModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto font-sans">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowSubmitModal(false)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full"
             >
               <X className="w-4 h-4" />
             </button>
- 
-            <h2 className="text-lg font-bold text-slate-900 uppercase font-['Poppins']">
-              Submit a Project
-            </h2>
- 
-            <form 
-              onSubmit={handleSubmit} 
-              className="space-y-4"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Project Title *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newProjData.title}
-                    onChange={(e) => setNewProjData({ ...newProjData, title: e.target.value })}
-                    placeholder="e.g. Smart Solar Grid Monitor"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Short Tagline *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newProjData.tagline}
-                    onChange={(e) => setNewProjData({ ...newProjData, tagline: e.target.value })}
-                    placeholder="e.g. Real-time IoT solar efficiency dashboard"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Domain & Field</label>
-                  <select
-                    value={newProjData.domain}
-                    onChange={(e) => setNewProjData({ ...newProjData, domain: e.target.value as any })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  >
-                    <option value="AI / ML">AI / ML</option>
-                    <option value="Web Development">Web Development</option>
-                    <option value="IoT & Embedded">IoT & Embedded</option>
-                    <option value="Robotics">Robotics</option>
-                    <option value="Cybersecurity">Cybersecurity</option>
-                    <option value="Mobile App">Mobile App</option>
-                  </select>
-                </div>
- 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Description *</label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={newProjData.description}
-                    onChange={(e) => setNewProjData({ ...newProjData, description: e.target.value })}
-                    placeholder="Explain architecture, technology stack, problem solved..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">GitHub Repository Link *</label>
-                  <input
-                    type="url"
-                    required
-                    value={newProjData.githubUrl}
-                    onChange={(e) => setNewProjData({ ...newProjData, githubUrl: e.target.value })}
-                    placeholder="https://github.com/username/repository"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Live Demo Link (Optional)</label>
-                  <input
-                    type="url"
-                    value={newProjData.demoUrl}
-                    onChange={(e) => setNewProjData({ ...newProjData, demoUrl: e.target.value })}
-                    placeholder="https://my-app.example.com"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Team Members (Comma separated)</label>
-                  <input
-                    type="text"
-                    value={newProjData.teamMembersStr}
-                    onChange={(e) => setNewProjData({ ...newProjData, teamMembersStr: e.target.value })}
-                    placeholder="John, Sarah, Priya"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
+
+            <h2 className="text-xl font-bold text-slate-900 font-['Poppins']">Submit Member Project</h2>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Project Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={newProjData.title}
+                  onChange={(e) => setNewProjData({ ...newProjData, title: e.target.value })}
+                  placeholder="e.g. Smart Solar Grid Monitor"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0]"
+                />
               </div>
- 
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Short Tagline</label>
+                <input
+                  type="text"
+                  value={newProjData.tagline}
+                  onChange={(e) => setNewProjData({ ...newProjData, tagline: e.target.value })}
+                  placeholder="e.g. Real-time IoT solar efficiency dashboard"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Domain & Field</label>
+                <select
+                  value={newProjData.domain}
+                  onChange={(e) => setNewProjData({ ...newProjData, domain: e.target.value as any })}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                >
+                  <option value="AI / ML">AI / ML</option>
+                  <option value="Web Development">Web Development</option>
+                  <option value="IoT & Embedded">IoT & Embedded</option>
+                  <option value="Robotics">Robotics</option>
+                  <option value="Cybersecurity">Cybersecurity</option>
+                  <option value="Mobile App">Mobile App</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Description *</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={newProjData.description}
+                  onChange={(e) => setNewProjData({ ...newProjData, description: e.target.value })}
+                  placeholder="Explain architecture, technology stack, problem solved..."
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">GitHub Repository Link *</label>
+                <input
+                  type="url"
+                  required
+                  value={newProjData.githubUrl}
+                  onChange={(e) => setNewProjData({ ...newProjData, githubUrl: e.target.value })}
+                  placeholder="https://github.com/username/repository"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Live Demo Link (Optional)</label>
+                <input
+                  type="url"
+                  value={newProjData.demoUrl}
+                  onChange={(e) => setNewProjData({ ...newProjData, demoUrl: e.target.value })}
+                  placeholder="https://my-app.example.com"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Team Members (Comma separated)</label>
+                <input
+                  type="text"
+                  value={newProjData.teamMembersStr}
+                  onChange={(e) => setNewProjData({ ...newProjData, teamMembersStr: e.target.value })}
+                  placeholder="John, Sarah, Priya"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                />
+              </div>
+
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowSubmitModal(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
                 >
-                  Discard
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] rounded-xl transition-all shadow"
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] shadow"
                 >
-                  Publish Project
+                  Publish Showcase
                 </button>
               </div>
             </form>

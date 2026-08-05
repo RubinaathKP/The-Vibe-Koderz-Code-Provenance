@@ -297,56 +297,54 @@ export const EventsView: React.FC<EventsViewProps> = ({
               </button>
             </div>
           </div>
-            {/* CREATE EVENT MODAL */}
+        </div>
+      )}
+
+      {/* CREATE EVENT MODAL */}
       {showCreateModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto font-sans">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 space-y-6 relative shadow-2xl max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setShowCreateModal(false)}
               className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full"
             >
               <X className="w-4 h-4" />
             </button>
- 
-            <h2 className="text-lg font-bold text-slate-900 uppercase font-['Poppins']">
-              Host an Event
-            </h2>
- 
-            <form 
-              onSubmit={handleCreateSubmit} 
-              className="space-y-4"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Event Title *</label>
-                  <input
-                    type="text"
-                    required
-                    value={newEventData.title}
-                    onChange={(e) => setNewEventData({ ...newEventData, title: e.target.value })}
-                    placeholder="e.g. AI & Robotics Symposium 2026"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Description *</label>
-                  <textarea
-                    rows={3}
-                    required
-                    value={newEventData.description}
-                    onChange={(e) => setNewEventData({ ...newEventData, description: e.target.value })}
-                    placeholder="Details about workshop objectives, prerequisites..."
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
+
+            <h2 className="text-xl font-bold text-slate-900 font-['Poppins']">Host New Chapter Event</h2>
+
+            <form onSubmit={handleCreateSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Event Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={newEventData.title}
+                  onChange={(e) => setNewEventData({ ...newEventData, title: e.target.value })}
+                  placeholder="e.g. AI & Robotics Symposium 2026"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Description *</label>
+                <textarea
+                  rows={3}
+                  required
+                  value={newEventData.description}
+                  onChange={(e) => setNewEventData({ ...newEventData, description: e.target.value })}
+                  placeholder="Details about workshop objectives, prerequisites..."
+                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0]"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Category</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Category</label>
                   <select
                     value={newEventData.category}
                     onChange={(e) => setNewEventData({ ...newEventData, category: e.target.value as any })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
                   >
                     <option value="Workshop">Workshop</option>
                     <option value="Hackathon">Hackathon</option>
@@ -355,61 +353,63 @@ export const EventsView: React.FC<EventsViewProps> = ({
                     <option value="Conference">Conference</option>
                   </select>
                 </div>
- 
+
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Date *</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Date *</label>
                   <input
                     type="date"
                     required
                     value={newEventData.date}
                     onChange={(e) => setNewEventData({ ...newEventData, date: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
                   />
                 </div>
- 
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Time</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Time</label>
                   <input
                     type="text"
                     value={newEventData.time}
                     onChange={(e) => setNewEventData({ ...newEventData, time: e.target.value })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
                   />
                 </div>
- 
+
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Capacity</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">Capacity</label>
                   <input
                     type="number"
                     value={newEventData.maxCapacity}
                     onChange={(e) => setNewEventData({ ...newEventData, maxCapacity: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                  />
-                </div>
- 
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Location / Venue</label>
-                  <input
-                    type="text"
-                    value={newEventData.location}
-                    onChange={(e) => setNewEventData({ ...newEventData, location: e.target.value })}
-                    placeholder="Auditorium B / Tech Lab"
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
                   />
                 </div>
               </div>
- 
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Location / Venue</label>
+                <input
+                  type="text"
+                  value={newEventData.location}
+                  onChange={(e) => setNewEventData({ ...newEventData, location: e.target.value })}
+                  placeholder="Auditorium B / Tech Lab"
+                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none"
+                />
+              </div>
+
               <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
                 >
-                  Discard
+                  Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] rounded-xl transition-all shadow"
+                  className="px-5 py-2 rounded-xl text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] shadow"
                 >
                   Publish Event
                 </button>
@@ -417,7 +417,6 @@ export const EventsView: React.FC<EventsViewProps> = ({
             </form>
           </div>
         </div>
-      )}      </div>
       )}
     </div>
   );
