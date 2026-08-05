@@ -130,3 +130,15 @@ During audits and deployment runs, several critical runtime errors and design de
   1. Shrink viewport width to `< 768px` (mobile profile).
   2. Click the Hamburger menu; verify it opens smoothly and covers the viewport without text overlapping or layout shifting.
   3. Verify the close `[X]` button closes the drawer without forcing an authentication route switch.
+
+### 5.4. Automated Unit & Integration Testing Suite
+To execute the automated unit and integration test runner:
+```bash
+npm test
+```
+
+#### Test Suite Architecture:
+* **[tests/crypto.test.ts](file:///e:/CodeProvenance/Code-Provenance/tests/crypto.test.ts)**: Unit tests for cookie session ciphers (`encryptToken`, `decryptToken`), asserting correct Base64-XOR encryption and validation failure behavior.
+* **[tests/phone.test.ts](file:///e:/CodeProvenance/Code-Provenance/tests/phone.test.ts)**: Unit tests validating the country JSON config parameters (dial code formatting, mandatory emoji flags, and positive verification lengths) across all 101 registered countries.
+* **[tests/store.test.ts](file:///e:/CodeProvenance/Code-Provenance/tests/store.test.ts)**: Validates that database reading/writing procedures fail-safe safely in serverless environments without raising filesystem write crashes.
+* **[tests/server.test.ts](file:///e:/CodeProvenance/Code-Provenance/tests/server.test.ts)**: Integration tests verifying that REST endpoints (`/api/health`, `/api/events`, `/api/projects`) return standard `200 OK` JSON responses.
