@@ -1,8 +1,8 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { initDb, saveDb } from './server/store.js';
-import { User, Event, Project, Announcement, Opportunity, Resource } from './src/types.js';
+import { initDb, saveDb } from './server/store';
+import { User, Event, Project, Announcement, Opportunity, Resource } from './src/types';
 import dotenv from 'dotenv';
 
 dotenv.config();

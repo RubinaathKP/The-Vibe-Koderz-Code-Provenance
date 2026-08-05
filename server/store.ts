@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { User, Event, Project, Announcement, Opportunity, Resource } from '../src/types.js';
+import { User, Event, Project, Announcement, Opportunity, Resource } from '../src/types';
 
 interface DatabaseSchema {
   users: (User & { passwordHash: string })[];
