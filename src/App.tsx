@@ -180,6 +180,11 @@ export default function App() {
 
   // Create Event Handler
   const handleCreateEvent = async (eventData: Partial<Event>): Promise<boolean> => {
+    if (!currentUser || currentUser.role !== 'lead') {
+      showToast('Unauthorized: Only chapter leads can host events', 'error');
+      return false;
+    }
+
     try {
       const res = await api.createEvent(eventData);
       if (res.success && res.event) {

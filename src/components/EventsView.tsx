@@ -89,7 +89,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
           <p className="text-xs text-slate-500 mt-1">Participate in technical symposiums, hackathons, and webinars</p>
         </div>
 
-        {user && (
+        {user && user.role === 'lead' && (
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2.5 bg-[#622569] hover:bg-[#9b51e0] text-white font-bold text-xs rounded-xl shadow transition-all flex items-center justify-center gap-2"

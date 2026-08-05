@@ -88,6 +88,47 @@
   ],
   "events": [
     {
+      "id": "evt_1785919687548",
+      "title": "Lead Authorized Event Test",
+      "description": "Should succeed",
+      "category": "Hackathon",
+      "date": "2026-08-05",
+      "time": "10:00 AM - 12:00 PM",
+      "location": "Lab 3",
+      "isVirtual": false,
+      "virtualLink": "",
+      "speaker": "Dr. John Doe",
+      "speakerRole": "Professor",
+      "organizer": "SRM IET Student Chapter",
+      "bannerUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80",
+      "maxCapacity": 100,
+      "registeredUserIds": [],
+      "tags": [
+        "IET",
+        "Event"
+      ],
+      "status": "upcoming"
+    },
+    {
+      "id": "evt_1785919570307",
+      "title": "Unauthorized Event Test",
+      "description": "Should fail",
+      "category": "Workshop",
+      "date": "2026-08-05",
+      "time": "10:00 AM - 12:00 PM",
+      "location": "TBA",
+      "isVirtual": false,
+      "organizer": "IET Chapter",
+      "bannerUrl": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80",
+      "maxCapacity": 100,
+      "registeredUserIds": [],
+      "tags": [
+        "IET",
+        "Event"
+      ],
+      "status": "upcoming"
+    },
+    {
       "id": "evt_ongoing_1",
       "title": "24-Hour Embedded IoT & AI Edge Design Sprint",
       "description": "Happening now! Teams are building real-time edge inference systems using Raspberry Pi 5 and ESP32 with live mentor feedback and sensor kits provided.",

@@ -178,6 +178,16 @@ let db = initDb();
   });
 
   app.post('/api/events', (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ success: false, message: 'Please login to host an event.' });
+    }
+    const userId = authHeader.replace('Bearer iet_token_', '').trim();
+    const user = db.users.find(u => u.id === userId);
+    if (!user || user.role !== 'lead') {
+      return res.status(403).json({ success: false, message: 'Forbidden: Only chapter leads can host events.' });
+    }
+
     const { title, description, category, date, time, location, isVirtual, virtualLink, speaker, speakerRole, organizer, bannerUrl, maxCapacity, tags } = req.body;
 
     if (!title || !description || !date) {
