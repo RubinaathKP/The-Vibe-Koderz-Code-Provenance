@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu } from 'lucide-react';
+import { ShieldCheck, LogOut, Search, Bell, Sparkles, User as UserIcon, Menu, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   user: User | null;
@@ -23,6 +23,31 @@ export const Navbar: React.FC<NavbarProps> = ({
   mobileMenuOpen,
   setMobileMenuOpen,
 }) => {
+  const [darkMode, setDarkMode] = React.useState(() => {
+    try {
+      return document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
+    } catch {
+      return false;
+    }
+  });
+
+  React.useEffect(() => {
+    try {
+      if (darkMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    } catch (e) {
+      console.warn('LocalStorage dark theme persistence failed:', e);
+    }
+  }, [darkMode]);
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
   return (
     <header className="sticky top-0 z-30 bg-yellow-200/95 backdrop-blur-md border-b-8 border-dashed border-red-500 px-2 sm:px-12 py-4 sm:py-8 flex items-center justify-between gap-3 sm:gap-10 -rotate-1 shadow-2xl">
       {/* Brand & Mobile Title */}
@@ -66,6 +91,15 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* User Actions */}
       <div className="flex items-center gap-2 sm:gap-6 rotate-2 mr-2">
+        {/* Dark Mode Toggle */}
+        <button
+          onClick={toggleDarkMode}
+          className="p-2 bg-yellow-300 hover:bg-yellow-400 text-black border-4 border-black rotate-12 transition-all shadow-md focus:outline-none"
+          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        >
+          {darkMode ? <Sun className="w-5 h-5 text-red-600 animate-spin" /> : <Moon className="w-5 h-5 text-black" />}
+        </button>
+
         {user ? (
           <>
             <button

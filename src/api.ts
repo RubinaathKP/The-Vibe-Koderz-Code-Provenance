@@ -5,36 +5,55 @@ const TOKEN_KEY = 'iet_auth_token';
 
 let memoryToken: string | null = null;
 
-export function getStoredToken(): string | null {
+function getCookie(name: string): string | null {
   try {
-    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || memoryToken;
-  } catch (err) {
-    console.warn('Storage access denied (running in sandboxed iframe?), falling back to memory storage:', err);
-    return memoryToken;
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+  } catch (e) {
+    console.warn('Cookie access denied:', e);
   }
+  return null;
+}
+
+function setCookie(name: string, value: string, days?: number): void {
+  try {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict; Secure";
+  } catch (e) {
+    console.warn('Cookie write denied:', e);
+  }
+}
+
+function eraseCookie(name: string): void {
+  try {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict; Secure';
+  } catch (e) {
+    console.warn('Cookie delete failed:', e);
+  }
+}
+
+export function getStoredToken(): string | null {
+  return getCookie(TOKEN_KEY) || memoryToken;
 }
 
 export function setStoredToken(token: string, remember: boolean = true): void {
   memoryToken = token;
-  try {
-    if (remember) {
-      localStorage.setItem(TOKEN_KEY, token);
-    } else {
-      sessionStorage.setItem(TOKEN_KEY, token);
-    }
-  } catch (err) {
-    console.warn('Storage write denied, using memory storage only:', err);
-  }
+  setCookie(TOKEN_KEY, token, remember ? 7 : undefined);
 }
 
 export function removeStoredToken(): void {
   memoryToken = null;
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(TOKEN_KEY);
-  } catch (err) {
-    console.warn('Storage delete denied, using memory storage only:', err);
-  }
+  eraseCookie(TOKEN_KEY);
 }
 
 function getAuthHeaders(): HeadersInit {
