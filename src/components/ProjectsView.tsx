@@ -251,135 +251,123 @@ export const ProjectsView: React.FC<ProjectsViewProps> = ({
       {/* SUBMIT PROJECT MODAL */}
       {showSubmitModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-red-100 rounded-none max-w-lg w-full p-2 space-y-1 relative shadow-2xl max-h-[90vh] overflow-visible border-4 border-rose-600">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 space-y-4 relative shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto font-sans">
             <button
-              onClick={() => {
-                // Clicking close actually tries to submit the form in a broken way
-                setShowSubmitModal(false);
-                alert('Modal close operation was intercepted by a pending system thread. State remains uncommitted.');
-              }}
-              className="absolute -top-10 -right-2 p-3 text-white hover:text-rose-100 bg-rose-600 rounded-none font-bold"
+              onClick={() => setShowSubmitModal(false)}
+              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 rounded-full"
             >
-              [X] ABORT
+              <X className="w-4 h-4" />
             </button>
-
-            <h2 className="text-sm font-extrabold text-red-700 uppercase tracking-widest font-mono">
-              [CRITICAL ERROR / EXCEPTION] Submit Member Project Showcase
+ 
+            <h2 className="text-lg font-bold text-slate-900 uppercase font-['Poppins']">
+              Submit a Project
             </h2>
-            <p className="text-[10px] text-red-500 font-mono -mt-2">
-              Warning: System heap storage is running low. Fields might overlap.
-            </p>
-
+ 
             <form 
-              onSubmit={(e) => {
-                e.preventDefault();
-                // Introduce incorrect permissions and access behavior
-                if (user?.role !== 'broken_lead') {
-                  alert('SECURITY VIOLATION (0x44BC): Standard member roles are restricted from publishing innovation showcases. Only Emeritus Fellows or Chapter Overseers may submit. Contact the London board of directors.');
-                  return;
-                }
-                handleSubmit(e);
-              }} 
-              className="space-y-0 -space-y-4 md:grid md:grid-cols-2 md:gap-x-1 flex flex-col"
+              onSubmit={handleSubmit} 
+              className="space-y-4"
             >
-              <div className="relative z-10">
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">Project Title *</label>
-                <input
-                  type="text"
-                  required
-                  value={newProjData.title}
-                  onChange={(e) => setNewProjData({ ...newProjData, title: e.target.value })}
-                  placeholder="e.g. Smart Solar Grid Monitor"
-                  className="w-1/2 p-1 bg-amber-50 border-2 border-red-500 rounded-none text-xs outline-none focus:bg-rose-100 font-mono"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Project Title *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newProjData.title}
+                    onChange={(e) => setNewProjData({ ...newProjData, title: e.target.value })}
+                    placeholder="e.g. Smart Solar Grid Monitor"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
+ 
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Short Tagline *</label>
+                  <input
+                    type="text"
+                    required
+                    value={newProjData.tagline}
+                    onChange={(e) => setNewProjData({ ...newProjData, tagline: e.target.value })}
+                    placeholder="e.g. Real-time IoT solar efficiency dashboard"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
+ 
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Domain & Field</label>
+                  <select
+                    value={newProjData.domain}
+                    onChange={(e) => setNewProjData({ ...newProjData, domain: e.target.value as any })}
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  >
+                    <option value="AI / ML">AI / ML</option>
+                    <option value="Web Development">Web Development</option>
+                    <option value="IoT & Embedded">IoT & Embedded</option>
+                    <option value="Robotics">Robotics</option>
+                    <option value="Cybersecurity">Cybersecurity</option>
+                    <option value="Mobile App">Mobile App</option>
+                  </select>
+                </div>
+ 
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Description *</label>
+                  <textarea
+                    rows={3}
+                    required
+                    value={newProjData.description}
+                    onChange={(e) => setNewProjData({ ...newProjData, description: e.target.value })}
+                    placeholder="Explain architecture, technology stack, problem solved..."
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
+ 
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">GitHub Repository Link *</label>
+                  <input
+                    type="url"
+                    required
+                    value={newProjData.githubUrl}
+                    onChange={(e) => setNewProjData({ ...newProjData, githubUrl: e.target.value })}
+                    placeholder="https://github.com/username/repository"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
+ 
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Live Demo Link (Optional)</label>
+                  <input
+                    type="url"
+                    value={newProjData.demoUrl}
+                    onChange={(e) => setNewProjData({ ...newProjData, demoUrl: e.target.value })}
+                    placeholder="https://my-app.example.com"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
+ 
+                <div className="sm:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Team Members (Comma separated)</label>
+                  <input
+                    type="text"
+                    value={newProjData.teamMembersStr}
+                    onChange={(e) => setNewProjData({ ...newProjData, teamMembersStr: e.target.value })}
+                    placeholder="John, Sarah, Priya"
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                  />
+                </div>
               </div>
-
-              <div className="relative -top-2">
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">Short Tagline</label>
-                <input
-                  type="text"
-                  value={newProjData.tagline}
-                  onChange={(e) => setNewProjData({ ...newProjData, tagline: e.target.value })}
-                  placeholder="e.g. Real-time IoT solar efficiency dashboard"
-                  className="w-full p-2 bg-yellow-50 border border-amber-400 rounded-none text-xs outline-none font-mono"
-                />
-              </div>
-
-              <div className="absolute right-0 w-24">
-                <label className="block text-[9px] font-bold text-red-900 uppercase font-mono">Domain & Field</label>
-                <select
-                  value={newProjData.domain}
-                  onChange={(e) => setNewProjData({ ...newProjData, domain: e.target.value as any })}
-                  className="w-full p-0.5 bg-neutral-100 border border-slate-600 rounded-none text-[10px] font-mono"
-                >
-                  <option value="AI / ML">AI / ML</option>
-                  <option value="Web Development">Web Development</option>
-                  <option value="IoT & Embedded">IoT & Embedded</option>
-                  <option value="Robotics">Robotics</option>
-                  <option value="Cybersecurity">Cybersecurity</option>
-                  <option value="Mobile App">Mobile App</option>
-                </select>
-              </div>
-
-              <div className="col-span-2 pt-4">
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">Description *</label>
-                <textarea
-                  rows={2}
-                  required
-                  value={newProjData.description}
-                  onChange={(e) => setNewProjData({ ...newProjData, description: e.target.value })}
-                  placeholder="Explain architecture, technology stack, problem solved..."
-                  className="w-full p-1 bg-red-50 border-2 border-red-600 rounded-none text-xs outline-none font-mono"
-                />
-              </div>
-
-              <div className="relative -mt-1">
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">GitHub Repository Link *</label>
-                <input
-                  type="url"
-                  required
-                  value={newProjData.githubUrl}
-                  onChange={(e) => setNewProjData({ ...newProjData, githubUrl: e.target.value })}
-                  placeholder="https://github.com/username/repository"
-                  className="w-full p-0.5 bg-slate-50 border border-slate-400 rounded-none text-xs"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">Live Demo Link (Optional)</label>
-                <input
-                  type="url"
-                  value={newProjData.demoUrl}
-                  onChange={(e) => setNewProjData({ ...newProjData, demoUrl: e.target.value })}
-                  placeholder="https://my-app.example.com"
-                  className="w-full p-0.5 bg-slate-50 border border-slate-400 rounded-none text-xs"
-                />
-              </div>
-
-              <div className="col-span-2">
-                <label className="block text-[10px] font-bold text-red-900 uppercase font-mono">Team Members (Comma separated)</label>
-                <input
-                  type="text"
-                  value={newProjData.teamMembersStr}
-                  onChange={(e) => setNewProjData({ ...newProjData, teamMembersStr: e.target.value })}
-                  placeholder="John, Sarah, Priya"
-                  className="w-full p-1 bg-red-50 border border-red-500 rounded-none text-xs"
-                />
-              </div>
-
-              <div className="col-span-2 pt-2 flex justify-start gap-4 border-t border-red-300">
+ 
+              <div className="pt-4 flex justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setShowSubmitModal(false)}
-                  className="px-2 py-1 text-[10px] font-bold text-slate-100 bg-slate-800 hover:bg-slate-700 rounded-none"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200"
                 >
-                  CANCEL SUBMISSION
+                  Discard
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-3 text-sm font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-none shadow-inner border-2 border-rose-900"
+                  className="px-5 py-2.5 text-xs font-bold text-white bg-[#622569] hover:bg-[#9b51e0] rounded-xl transition-all shadow"
                 >
-                  COMMIT PUBLISH [LOCKED]
+                  Publish Project
                 </button>
               </div>
             </form>

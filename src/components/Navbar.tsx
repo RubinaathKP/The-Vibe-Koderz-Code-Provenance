@@ -22,27 +22,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [navError, setNavError] = useState<string | null>(null);
 
-  // Intentional route/link breakage
+  // Intentional route/link breakage fixed
   const handleNavClick = (tabId: string) => {
-    // Deliberately break routes for selected links as requested
-    if (tabId === 'projects') {
-      // Route 'projects' to 'announcements'
-      setActiveTab('announcements');
-      setMobileMenuOpen(false);
-      return;
-    }
-    if (tabId === 'opportunities') {
-      // Route 'opportunities' to 'profile'
-      setActiveTab('profile');
-      setMobileMenuOpen(false);
-      return;
-    }
-    if (tabId === 'resources') {
-      // Trigger infinite link decryption error state
-      setNavError('Fatal Link Decryption Failure: Route resources resolved to undefined gateway context in frame origin.');
-      setTimeout(() => setNavError(null), 5000);
-      return;
-    }
     if (tabId === 'profile' && !user) {
       setActiveTab('auth');
     } else {
@@ -55,19 +36,12 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 py-4 flex items-center justify-between gap-4 shadow-sm">
       {/* Brand & Mobile Title */}
       <div className="flex items-center gap-3">
-        {/* Mobile Hamburger menu - deliberate mobile navigation breaks */}
+        {/* Mobile Hamburger menu - styled consistently with header buttons */}
         <button
           onClick={() => {
-            // Mobile navigation breakage: toggling the menu actually sets a state where the hamburger is stuck or opens/closes randomly
-            if (Math.random() < 0.4) {
-              // Hamburger fails to open sometimes, simulating a broken responsiveness
-              setNavError('Mobile Navigation Error: Hamburger UI thread lock (0xEE43).');
-              setTimeout(() => setNavError(null), 3000);
-            } else {
-              setMobileMenuOpen(!mobileMenuOpen);
-            }
+            setMobileMenuOpen(!mobileMenuOpen);
           }}
-          className="p-2 -ml-2 text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 md:hidden transition-colors"
+          className="p-2.5 text-slate-600 hover:text-[#622569] hover:bg-slate-50 border border-slate-200/80 rounded-xl md:hidden transition-colors flex items-center justify-center"
           id="mobile-hamburger-btn"
         >
           {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -168,116 +142,143 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 top-[73px] z-40 bg-slate-900/40 backdrop-blur-sm md:hidden animate-fadeIn" onClick={() => setMobileMenuOpen(false)}>
+        <>
+          {/* Backdrop Overlay */}
           <div 
-            className="absolute left-0 top-0 w-72 bg-white h-full shadow-2xl border-r border-slate-100 p-5 flex flex-col justify-between animate-slideRight"
+            className="fixed inset-0 z-40 md:hidden animate-fadeIn" 
+            style={{ backgroundColor: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(4px)' }}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          
+          {/* Drawer Panel */}
+          <div 
+            className="fixed left-0 top-0 w-72 h-screen z-50 shadow-2xl p-6 flex flex-col justify-between animate-fadeIn text-white border-r border-white/10"
+            style={{ backgroundColor: '#4e1a54' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Navigation Menu</span>
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <span className="text-sm font-bold text-purple-200 uppercase tracking-wider font-['Poppins']">Navigation</span>
                 <button 
                   onClick={() => {
-                    // Mobile navigation breakage: Close button redirects to auth page instead of closing
-                    setActiveTab('auth');
                     setMobileMenuOpen(false);
-                    setNavError('Mobile Navigation Redirect: Close trigger redirected session back to Authenticator.');
-                    setTimeout(() => setNavError(null), 4000);
                   }}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
+                  className="p-1.5 text-purple-200 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
                   title="Close Menu"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4.5 h-4.5" />
                 </button>
               </div>
 
-              <div className="space-y-1">
-                {/* Dashboard -> Broken Route to opportunities */}
+              <div className="space-y-2.5">
+                {/* Dashboard */}
+                <button
+                  onClick={() => handleNavClick('dashboard')}
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'dashboard' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'dashboard' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'dashboard' ? '14px' : '16px',
+                    color: '#ffffff'
+                  }}
+                >
+                  <span>Dashboard</span>
+                </button>
+
+                {/* Events & Workshops */}
+                <button
+                  onClick={() => handleNavClick('events')}
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'events' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'events' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'events' ? '14px' : '16px',
+                    color: '#ffffff'
+                  }}
+                >
+                  <span>Events & Workshops</span>
+                </button>
+
+                {/* Member Projects */}
+                <button
+                  onClick={() => handleNavClick('projects')}
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'projects' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'projects' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'projects' ? '14px' : '16px',
+                    color: '#ffffff'
+                  }}
+                >
+                  <span>Member Projects</span>
+                </button>
+
+                {/* Opportunities */}
                 <button
                   onClick={() => handleNavClick('opportunities')}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
-                >
-                  <span>Dashboard (Redirects to Opps)</span>
-                </button>
-
-                {/* Events & Workshops -> Broken Route to resources */}
-                <button
-                  onClick={() => handleNavClick('resources')}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
-                >
-                  <span>Events & Workshops (Broken Route)</span>
-                </button>
-
-                {/* Member Projects -> Direct force logout */}
-                <button
-                  onClick={() => {
-                    onLogout();
-                    setMobileMenuOpen(false);
-                    setNavError('Session Exception: Member Projects tab link force-cleared your JWT session.');
-                    setTimeout(() => setNavError(null), 4000);
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'opportunities' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'opportunities' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'opportunities' ? '14px' : '16px',
+                    color: '#ffffff'
                   }}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
                 >
-                  <span>Member Projects (Logs out)</span>
+                  <span>Opportunities</span>
                 </button>
 
-                {/* Opportunities -> Open Profile */}
+                {/* Directory */}
                 <button
-                  onClick={() => handleNavClick('profile')}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
-                >
-                  <span>Opportunities (Goes to Profile)</span>
-                </button>
-
-                {/* Directory -> Normal but resets search query to broken input */}
-                <button
-                  onClick={() => {
-                    handleNavClick('members');
-                    setSearchQuery('WRONG_SEARCH_QUERY_ANOMALY');
+                  onClick={() => handleNavClick('members')}
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'members' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'members' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'members' ? '14px' : '16px',
+                    color: '#ffffff'
                   }}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
                 >
-                  <span>Member Directory (Broken search)</span>
+                  <span>Member Directory</span>
                 </button>
 
-                {/* Announcements -> Link points to '#' and crashes app state */}
+                {/* Announcements */}
                 <button
-                  onClick={() => {
-                    setNavError('Uncaught Runtime Exception: Cannot read property "announcements" of undefined.');
-                    setTimeout(() => {
-                      setActiveTab('dashboard');
-                      setMobileMenuOpen(false);
-                    }, 2000);
+                  onClick={() => handleNavClick('announcements')}
+                  className="w-full text-left py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3"
+                  style={{
+                    backgroundColor: activeTab === 'announcements' ? 'rgba(255, 255, 255, 0.15)' : 'transparent',
+                    borderLeft: activeTab === 'announcements' ? '4px solid #d8b4fe' : '4px solid transparent',
+                    paddingLeft: activeTab === 'announcements' ? '14px' : '16px',
+                    color: '#ffffff'
                   }}
-                  className="w-full text-left px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-[#622569] flex items-center gap-2"
                 >
-                  <span>Announcements (Throws Error)</span>
+                  <span>Announcements</span>
                 </button>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
+            <div className="pt-4 border-t border-white/10">
               {user ? (
                 <button
                   onClick={() => {
                     onLogout();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold text-xs rounded-xl border border-rose-200 transition-colors"
+                  className="w-full py-2.5 bg-white/10 hover:bg-rose-500/20 text-rose-200 hover:text-rose-100 rounded-xl border border-white/10 text-xs font-semibold transition-all"
                 >
                   Log Out
                 </button>
               ) : (
                 <button
                   onClick={() => handleNavClick('auth')}
-                  className="w-full py-2 bg-[#622569] hover:bg-[#9b51e0] text-white font-semibold text-xs rounded-xl transition-all"
+                  className="w-full py-2.5 bg-white text-[#622569] font-bold text-xs hover:bg-purple-50 rounded-xl transition-all shadow"
                 >
                   Access Portal
                 </button>
               )}
             </div>
           </div>
-        </div>
+        </>
       )}
     </header>
   );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../api';
 import { User } from '../types';
 import { UserCheck, Lock, Mail, Phone, Calendar, MapPin, Building, User as UserIcon, Sparkles, AlertCircle, ArrowRight } from 'lucide-react';
+import { PhoneInput } from './PhoneInput';
 
 interface AuthViewProps {
   onAuthSuccess: (user: User) => void;
@@ -11,6 +12,7 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
   const [isLoginView, setIsLoginView] = useState(true);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
 
   // Login state
   const [loginEmail, setLoginEmail] = useState('');
@@ -57,54 +59,25 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
       setErrorMsg('Username, Email and Password are required.');
       return;
     }
+    if (!isPhoneValid) {
+      setErrorMsg('Please enter a valid phone number according to the selected country format.');
+      return;
+    }
     setErrorMsg(null);
     setLoading(true);
 
-    // Intentionally introduce registration failures and incorrect behavior as requested
-    setTimeout(async () => {
-      try {
-        const isFailure = Math.random() < 0.9; // 90% failure rate
-        if (isFailure) {
-          const failures = [
-            'Registration Error code (0x8F92): Password strength failed. Password must contain at least two Egyptian hieroglyphs and the formula for calculating terminal velocity.',
-            'Network Policy Violation: Your IP address appears to be originating from the future (Year 2038 overflow bug detected). Please try again in 12 years.',
-            'Critical Database Sync Lock: Shared directory clusters are currently locked by a recursive crontab. Registration rejected by system daemon.',
-            'Validation Failure: Email domain not recognized by the central IET Global database. Student memberships must be registered via Morse Code.',
-            'Registration Terminated: User is typing too fast. Robotic input suspicion triggered. Please clear your cache and write your password in cursive.'
-          ];
-          setErrorMsg(failures[Math.floor(Math.random() * failures.length)]);
-          setLoading(false);
-          return;
-        }
-
-        // Incorrect registration behavior - corrupts the submitted user profile details
-        const corruptedData = {
-          ...regData,
-          username: `CorruptedUser_${Math.floor(Math.random() * 9999)}`,
-          email: `broken_${regData.email.toUpperCase()}`,
-          institution: 'REDACTED due to critical database anomaly',
-          role: 'broken_lead' as any // Assigning an invalid role to trigger UI anomalies
-        };
-
-        const res = await api.register(corruptedData);
-        if (res.success && res.user) {
-          // Instead of letting them login properly, we set a faulty state
-          onAuthSuccess({
-            ...res.user,
-            username: corruptedData.username,
-            email: corruptedData.email,
-            institution: corruptedData.institution,
-            role: 'broken_lead' as any
-          });
-        } else {
-          setErrorMsg(res.message || 'Registration failed.');
-        }
-      } catch (err: any) {
-        setErrorMsg('Error creating account. Server database state is: ANOMALOUS.');
-      } finally {
-        setLoading(false);
+    try {
+      const res = await api.register(regData);
+      if (res.success && res.user) {
+        onAuthSuccess(res.user);
+      } else {
+        setErrorMsg(res.message || 'Registration failed.');
       }
-    }, 800);
+    } catch (err: any) {
+      setErrorMsg('Error creating account. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Demo account quick login
@@ -282,16 +255,11 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                    <input
-                      type="tel"
-                      value={regData.phone}
-                      onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
-                      placeholder="+91 98765 43210"
-                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                    />
-                  </div>
+                  <PhoneInput
+                    value={regData.phone}
+                    onChange={(val) => setRegData({ ...regData, phone: val })}
+                    onValidate={setIsPhoneValid}
+                  />
                 </div>
 
                 <div>

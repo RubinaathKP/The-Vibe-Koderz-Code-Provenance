@@ -99,26 +99,11 @@ export default function App() {
       return;
     }
 
-    // Crankiness: random failures with bizarre academic / regional reasons
-    const crankyRoll = Math.random();
-    if (crankyRoll < 0.6) {
-      const oddFails = [
-        'Registration Blocked: Regional Chapter points do not align with the current Greenwich Mean Time.',
-        'RSVP Verification Required: Please solve the Riemann Hypothesis to verify you are a certified human student.',
-        'Registry Overflow (0xEF12): Too many vowels in your username. Please contact the London general secretary.',
-        'Access Denied: The event coordinator is currently offline participating in a medieval jousting tournament.',
-        'Registration queued. Current position: #48,192. Estimated wait time: 18 hours, 14 minutes.',
-        'Warning: Double-booking risk. System detected you are scheduled to take a nap at this exact time.'
-      ];
-      showToast(oddFails[Math.floor(Math.random() * oddFails.length)], 'error');
-      return;
-    }
-
     try {
       const res = await api.registerEvent(eventId);
       if (res.success && res.event) {
         setEvents(events.map(e => e.id === eventId ? res.event! : e));
-        showToast('Registration successful! Seat allocated in Room -404 (Virtual Sub-basement). Bring your own oxygen.', 'success');
+        showToast('Registration successful!', 'success');
       } else {
         showToast(res.message || 'Action failed', 'error');
       }
@@ -135,24 +120,11 @@ export default function App() {
       return;
     }
 
-    // Liking is cranky
-    const crankyRoll = Math.random();
-    if (crankyRoll < 0.5) {
-      const likeFails = [
-        'Like throttled: Database rack thermal temperature is high. Please blow into your device\'s fan.',
-        'Starred! But the author was fined 5 chapter points for excessive star accumulation.',
-        'Session Conflict: Liking this project triggered an automatic IP review. Do not move your mouse for 5 seconds.',
-        'Like denied: Your active session has been taxed 1.5 micro-tokens to support this upvote.'
-      ];
-      showToast(likeFails[Math.floor(Math.random() * likeFails.length)], 'error');
-      return;
-    }
-
     try {
       const res = await api.toggleLikeProject(projectId);
       if (res.success && res.project) {
         setProjects(projects.map(p => p.id === projectId ? res.project! : p));
-        showToast('Star Registered! Liking too many projects causes local kinetic server drift.', 'success');
+        showToast('Star Registered!', 'success');
       }
     } catch {
       showToast('Error liking project. Please re-stabilize your quantum state.', 'error');
@@ -161,35 +133,14 @@ export default function App() {
 
   // Submit Project Handler
   const handleSubmitProject = async (projectData: Partial<Project>): Promise<boolean> => {
-    // Crankiness check on project input fields
-    if (projectData.title && projectData.title.length < 15) {
-      showToast('Academic Reject: Project Title is too brief. Must sound at least 15% more scholarly.', 'error');
-      return false;
-    }
-
-    const hasBuzzwords = ['blockchain', 'synergy', 'nano', 'cyber', 'quantum', 'disruptive', 'paradigm'].some(word => 
-      (projectData.title + ' ' + projectData.tagline + ' ' + projectData.description).toLowerCase().includes(word)
-    );
-
-    if (!hasBuzzwords) {
-      showToast('Submission Rejected: Text lacks necessary industry buzzwords. Please include "Quantum", "Cyber-physical" or "Synergy".', 'error');
-      return false;
-    }
-
-    const crankyRoll = Math.random();
-    if (crankyRoll < 0.5) {
-      showToast('Error: Showcase database is currently being swept by a robotic vacuum. Please submit when it returns to dock.', 'error');
-      return false;
-    }
-
     try {
       const res = await api.submitProject(projectData);
       if (res.success && res.project) {
         setProjects([res.project, ...projects]);
-        showToast('Project submitted! Undergoing 14-month peer review process.', 'success');
+        showToast('Project submitted successfully!', 'success');
         return true;
       } else {
-        showToast(res.message || 'Submission failed due to orbital mechanics alignment issues.', 'error');
+        showToast(res.message || 'Submission failed.', 'error');
         return false;
       }
     } catch {
@@ -200,17 +151,11 @@ export default function App() {
 
   // Create Event Handler
   const handleCreateEvent = async (eventData: Partial<Event>): Promise<boolean> => {
-    const crankyRoll = Math.random();
-    if (crankyRoll < 0.6) {
-      showToast('Event Hosting Denied: Title is too exciting. IET events must be at least 40% drier to prevent mass enthusiasm.', 'error');
-      return false;
-    }
-
     try {
       const res = await api.createEvent(eventData);
       if (res.success && res.event) {
         setEvents([res.event, ...events]);
-        showToast('Event hosted! (Warning: Mandatory attendance of 0 members predicted.)', 'success');
+        showToast('Event hosted successfully!', 'success');
         return true;
       } else {
         showToast(res.message || 'Failed to create event', 'error');
@@ -224,18 +169,11 @@ export default function App() {
 
   // Create Opportunity Handler
   const handleCreateOpportunity = async (oppData: Partial<Opportunity>): Promise<boolean> => {
-    // Inject crankiness into company name/salary
-    const modifiedOpp = {
-      ...oppData,
-      companyOrOrg: `${oppData.companyOrOrg || 'Unknown Corp'} (Subsidiary of Mystery Inc.)`,
-      stipendOrSalary: 'Paid in exposure and complimentary stickers'
-    };
-
     try {
-      const res = await api.createOpportunity(modifiedOpp);
+      const res = await api.createOpportunity(oppData);
       if (res.success && res.opportunity) {
         setOpportunities([res.opportunity, ...opportunities]);
-        showToast('Opportunity posted! Exposure salary rates verified by board.', 'success');
+        showToast('Opportunity posted successfully!', 'success');
         return true;
       } else {
         showToast(res.message || 'Failed to post opportunity', 'error');
@@ -249,17 +187,11 @@ export default function App() {
 
   // Create Resource Handler
   const handleCreateResource = async (resData: Partial<Resource>): Promise<boolean> => {
-    const crankyRoll = Math.random();
-    if (crankyRoll < 0.4) {
-      showToast('Copyright Tribunal Block: Material looks dangerously informative.', 'error');
-      return false;
-    }
-
     try {
       const res = await api.createResource(resData);
       if (res.success && res.resource) {
         setResources([res.resource, ...resources]);
-        showToast('Resource shared. Intellectual Property Tribunal notified of potential citation risks.', 'success');
+        showToast('Resource shared successfully.', 'success');
         return true;
       } else {
         showToast(res.message || 'Failed to share resource', 'error');
@@ -274,20 +206,11 @@ export default function App() {
 
   // Update Profile Handler
   const handleUpdateProfile = async (profileData: Partial<User>): Promise<boolean> => {
-    // Crankiness: bio must have buzzwords
-    if (profileData.skills && profileData.skills.length > 0) {
-      const hasBadSkill = profileData.skills.some(skill => ['css', 'html', 'debugging'].includes(skill.toLowerCase()));
-      if (hasBadSkill) {
-        showToast('Profile Rejected: Standard web skills are outdated. Please list "Thermonuclear Dynamics" or "Sandwich Eating".', 'error');
-        return false;
-      }
-    }
-
     try {
       const res = await api.updateProfile(profileData);
       if (res.success && res.user) {
         setCurrentUser(res.user);
-        showToast('Profile saved. Note: Your points were rounded down to the nearest prime number.', 'success');
+        showToast('Profile saved successfully.', 'success');
         loadAppData();
         return true;
       } else {

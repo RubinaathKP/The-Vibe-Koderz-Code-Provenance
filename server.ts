@@ -3,11 +3,14 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import { initDb, saveDb } from './server/store.js';
 import { User, Event, Project, Announcement, Opportunity, Resource } from './src/types.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function startServer() {
 
   const app = express();
-  const PORT = 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
   // Middleware for parsing JSON requests
   app.use(express.json());
@@ -431,8 +434,8 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`IET CONNECT Full-Stack Server running on http://0.0.0.0:${PORT}`);
+  app.listen(PORT, '127.0.0.1', () => {
+    console.log(`IET CONNECT Full-Stack Server running on http://localhost:${PORT}`);
   });
 }
 
