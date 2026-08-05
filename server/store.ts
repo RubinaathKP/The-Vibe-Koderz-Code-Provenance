@@ -474,11 +474,19 @@ const INITIAL_DATA: DatabaseSchema = {
 // Ensure data directory and file exist
 export function initDb(): DatabaseSchema {
   if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+    try {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    } catch (e) {
+      console.warn('Failed to create DATA_DIR (read-only filesystem?):', e);
+    }
   }
 
   if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DATA, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DATA, null, 2), 'utf-8');
+    } catch (e) {
+      console.warn('Failed to create initial db.json (read-only filesystem?), falling back to memory:', e);
+    }
     return INITIAL_DATA;
   }
 
@@ -506,11 +514,19 @@ export function initDb(): DatabaseSchema {
       }
     });
 
-    fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(parsed, null, 2), 'utf-8');
+    } catch (e) {
+      console.warn('Failed to write seed updates to db.json (read-only filesystem?), falling back to memory:', e);
+    }
     return parsed;
   } catch (err) {
     console.error('Failed to parse db.json, re-initializing', err);
-    fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DATA, null, 2), 'utf-8');
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(INITIAL_DATA, null, 2), 'utf-8');
+    } catch (e) {
+      console.warn('Failed to reset db.json (read-only filesystem?), falling back to memory:', e);
+    }
     return INITIAL_DATA;
   }
 }
@@ -518,11 +534,15 @@ export function initDb(): DatabaseSchema {
 export function saveDb(data: DatabaseSchema): void {
   try {
     if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
+      try {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      } catch (e) {
+        // Ignore, handled by next write check
+      }
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
   } catch (err) {
-    console.error('Failed to save db.json', err);
+    console.warn('Failed to save db.json (read-only filesystem?), data persisted in runtime memory:', err);
   }
 }
 
