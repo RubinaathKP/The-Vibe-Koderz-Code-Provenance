@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import { initDb, saveDb } from './server/store.js';
+import { initDb, saveDb } from './server-store/store.js';
 import { User, Event, Project, Announcement, Opportunity, Resource } from './src/types.js';
 import dotenv from 'dotenv';
 
