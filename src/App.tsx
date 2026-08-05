@@ -77,6 +77,11 @@ export default function App() {
     loadAppData();
   }, []);
 
+  // Reset search query whenever tab changes
+  useEffect(() => {
+    setSearchQuery('');
+  }, [activeTab]);
+
   const handleAuthSuccess = (user: User) => {
     setCurrentUser(user);
     setActiveTab('dashboard');
