@@ -7,10 +7,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-async function startServer() {
+export const app = express();
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
-  const app = express();
-  const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+async function startServer() {
 
   // Middleware for parsing JSON requests
   app.use(express.json());
@@ -420,23 +420,25 @@ async function startServer() {
 
 
   // Vite middleware / static files setup
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
+  } else if (!process.env.VERCEL) {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
-
-  app.listen(PORT, '127.0.0.1', () => {
-    console.log(`IET CONNECT Full-Stack Server running on http://localhost:${PORT}`);
-  });
+ 
+  if (!process.env.VERCEL) {
+    app.listen(PORT, '127.0.0.1', () => {
+      console.log(`IET CONNECT Full-Stack Server running on http://localhost:${PORT}`);
+    });
+  }
 }
-
-startServer();
+ 
+startServer().catch(console.error);

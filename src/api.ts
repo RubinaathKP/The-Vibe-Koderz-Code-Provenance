@@ -121,29 +121,55 @@ export const api = {
     city?: string;
     institution?: string;
   }): Promise<AuthResponse> {
-    const res = await fetch('/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    const json = await res.json();
-    if (json.success && json.token) {
-      setStoredToken(json.token);
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          return { success: false, message: errorJson.message || 'Registration failed.' };
+        } catch {
+          return { success: false, message: `Server error (${res.status}).` };
+        }
+      }
+      const json = await res.json();
+      if (json.success && json.token) {
+        setStoredToken(json.token);
+      }
+      return json;
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Network connection failed.' };
     }
-    return json;
   },
-
+ 
   async login(email: string, password: string): Promise<AuthResponse> {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const json = await res.json();
-    if (json.success && json.token) {
-      setStoredToken(json.token);
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const errorText = await res.text();
+        try {
+          const errorJson = JSON.parse(errorText);
+          return { success: false, message: errorJson.message || 'Login failed.' };
+        } catch {
+          return { success: false, message: `Server error (${res.status}).` };
+        }
+      }
+      const json = await res.json();
+      if (json.success && json.token) {
+        setStoredToken(json.token);
+      }
+      return json;
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Network connection failed.' };
     }
-    return json;
   },
 
   async getMe(): Promise<{ success: boolean; user?: User; message?: string }> {
