@@ -1,10 +1,29 @@
 import React, { useState } from 'react';
 import { User } from '../types';
 import { Mail, Phone, MapPin, Building, Calendar, Edit3, Github, Linkedin, ShieldCheck, Sparkles, Check, X, Tag } from 'lucide-react';
+import countries from './countries.json';
 
 interface ProfileViewProps {
   user: User;
   onUpdateProfile: (updatedData: Partial<User>) => Promise<boolean>;
+}
+
+function parsePhone(fullPhone: string) {
+  if (!fullPhone) return { dialCode: '+91', raw: '' };
+  const sortedCountries = [...countries].sort((a, b) => b.dialCode.length - a.dialCode.length);
+  for (const c of sortedCountries) {
+    if (fullPhone.startsWith(c.dialCode)) {
+      const raw = fullPhone.slice(c.dialCode.length).trim();
+      return { dialCode: c.dialCode, raw };
+    }
+  }
+  if (fullPhone.startsWith('+')) {
+    const parts = fullPhone.split(' ');
+    if (parts.length > 1) {
+      return { dialCode: parts[0], raw: parts.slice(1).join(' ') };
+    }
+  }
+  return { dialCode: '+91', raw: fullPhone };
 }
 
 export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile }) => {
@@ -12,6 +31,53 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
   const [saving, setSaving] = useState(false);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
+
+  const initialPhoneData = parsePhone(user.phone || '');
+  const [selectedCountryCode, setSelectedCountryCode] = useState(initialPhoneData.dialCode);
+  const [rawPhone, setRawPhone] = useState(initialPhoneData.raw);
+
+  React.useEffect(() => {
+    const updatedPhone = parsePhone(user.phone || '');
+    setSelectedCountryCode(updatedPhone.dialCode);
+    setRawPhone(updatedPhone.raw);
+    setFormData({
+      username: user.username,
+      phone: user.phone || '',
+      gender: user.gender || 'Male',
+      dob: user.dob || '',
+      city: user.city || '',
+      institution: user.institution || '',
+      bio: user.bio || '',
+      githubUrl: user.githubUrl || '',
+      linkedinUrl: user.linkedinUrl || '',
+      avatarUrl: user.avatarUrl || '',
+      skills: user.skills || [],
+      interests: user.interests || [],
+    });
+  }, [user]);
+
+  const handleEditToggle = () => {
+    if (isEditing) {
+      const resetPhone = parsePhone(user.phone || '');
+      setSelectedCountryCode(resetPhone.dialCode);
+      setRawPhone(resetPhone.raw);
+      setFormData({
+        username: user.username,
+        phone: user.phone || '',
+        gender: user.gender || 'Male',
+        dob: user.dob || '',
+        city: user.city || '',
+        institution: user.institution || '',
+        bio: user.bio || '',
+        githubUrl: user.githubUrl || '',
+        linkedinUrl: user.linkedinUrl || '',
+        avatarUrl: user.avatarUrl || '',
+        skills: user.skills || [],
+        interests: user.interests || [],
+      });
+    }
+    setIsEditing(!isEditing);
+  };
 
   const [formData, setFormData] = useState({
     username: user.username,
@@ -97,7 +163,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
             </div>
 
             <button
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={handleEditToggle}
               className="px-4 py-2.5 rounded-xl bg-[#622569] hover:bg-[#9b51e0] text-white text-xs font-bold shadow-sm transition-all flex items-center gap-1.5"
             >
               <Edit3 className="w-4 h-4" />
@@ -123,12 +189,33 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ user, onUpdateProfile 
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                  <input
-                    type="text"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0] focus:bg-white"
-                  />
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedCountryCode}
+                      onChange={(e) => {
+                        const newCode = e.target.value;
+                        setSelectedCountryCode(newCode);
+                        setFormData({ ...formData, phone: newCode + ' ' + rawPhone });
+                      }}
+                      className="w-28 px-2 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] sm:text-xs outline-none focus:bg-white focus:border-[#9b51e0]"
+                    >
+                      {countries.map((c) => (
+                        <option key={`${c.code}-${c.dialCode}`} value={c.dialCode}>
+                          {c.flag} {c.dialCode} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      type="tel"
+                      value={rawPhone}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, '');
+                        setRawPhone(val);
+                        setFormData({ ...formData, phone: selectedCountryCode + ' ' + val });
+                      }}
+                      className="flex-1 px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:border-[#9b51e0] focus:bg-white"
+                    />
+                  </div>
                 </div>
 
                 <div>

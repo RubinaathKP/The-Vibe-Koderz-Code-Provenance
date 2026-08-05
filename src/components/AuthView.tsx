@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../api';
 import { User } from '../types';
 import { UserCheck, Lock, Mail, Phone, Calendar, MapPin, Building, User as UserIcon, Sparkles, AlertCircle, ArrowRight } from 'lucide-react';
+import countries from './countries.json';
 
 interface AuthViewProps {
   onAuthSuccess: (user: User) => void;
@@ -27,6 +28,9 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
     city: '',
     institution: ''
   });
+
+  const [selectedCountryCode, setSelectedCountryCode] = useState('+91');
+  const [rawPhone, setRawPhone] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,15 +253,36 @@ export const AuthView: React.FC<AuthViewProps> = ({ onAuthSuccess }) => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                    <input
-                      type="tel"
-                      value={regData.phone}
-                      onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
-                      placeholder="+91 98765 43210"
-                      className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
-                    />
+                  <div className="flex gap-2">
+                    <select
+                      value={selectedCountryCode}
+                      onChange={(e) => {
+                        const newCode = e.target.value;
+                        setSelectedCountryCode(newCode);
+                        setRegData({ ...regData, phone: newCode + ' ' + rawPhone });
+                      }}
+                      className="w-28 px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-[10px] sm:text-xs outline-none focus:bg-white focus:border-[#9b51e0]"
+                    >
+                      {countries.map((c) => (
+                        <option key={`${c.code}-${c.dialCode}`} value={c.dialCode}>
+                          {c.flag} {c.dialCode} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                    <div className="relative flex-1">
+                      <Phone className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
+                      <input
+                        type="tel"
+                        value={rawPhone}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, '');
+                          setRawPhone(val);
+                          setRegData({ ...regData, phone: selectedCountryCode + ' ' + val });
+                        }}
+                        placeholder="98765 43210"
+                        className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:border-[#9b51e0] outline-none"
+                      />
+                    </div>
                   </div>
                 </div>
 
